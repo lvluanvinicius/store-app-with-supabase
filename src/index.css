@@ -3,6 +3,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-neutral: var(--color-neutral);
+  --color-base-100: var(--color-base-100);
+  --color-info: var(--color-info);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+}
+
 :root {
     --color-primary: #1d4ed8;
     --color-secondary: #9333ea;
@@ -15,12 +27,13 @@
     --color-error: #ef4444;
 }
 
+
 @layer base {
   input {
     outline: none;
   }
 
   input:focus {
-    box-shadow: 0 0 0 1px var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-secondary);
   }
 }
