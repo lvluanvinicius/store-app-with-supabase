@@ -3,6 +3,7 @@ import { translateMessages } from "@/lib/translate-messages";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/services/supabase-client";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { FormEvent, useState } from "react";
 
 export const FormLogin = () => {
@@ -10,9 +11,16 @@ export const FormLogin = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { mutateAsync: signIn, isPending } = useMutation({
+  const navigate = useNavigate();
+
+  const { mutate: signIn, isPending } = useMutation({
     mutationFn: async () => {
       setErrorMessage(null);
+
+      if (!email || !password) {
+        setErrorMessage("Por favor, preencha todos os campos.");
+        return;
+      }
 
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -21,14 +29,17 @@ export const FormLogin = () => {
 
       if (error) {
         setErrorMessage(translateMessages.ptBR[error.message]);
+        return;
       }
+
+      navigate({ to: "/dashboard" });
     },
   });
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await signIn();
+    signIn();
   };
 
   return (
