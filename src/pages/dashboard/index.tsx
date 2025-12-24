@@ -3,7 +3,7 @@ import { LayoutPanel } from "@/layout/panel";
 export function Dashboard() {
   return (
     <LayoutPanel>
-      <div>teste</div>
+      <div className="border">teste</div>
     </LayoutPanel>
   );
 }

@@ -1,9 +1,13 @@
+import { SidebarApp } from "@/components/sidebar-app";
 import { PropsWithChildren } from "react";
 
 export const LayoutPanel = ({ children }: PropsWithChildren) => {
   return (
-    <div className="min-h-screen bg-neutral-900 text-white">
-      <main className="container mx-auto xl:max-w-7xl">{children}</main>
+    <div className="fixed inset-0 bg-neutral-900 text-white">
+      <SidebarApp />
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="overflow-auto">{children}</div>
+      </main>
     </div>
   );
 };
