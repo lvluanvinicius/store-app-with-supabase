@@ -1,1 +1,26 @@
-@import 'tailwindcss'
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+    --color-primary: #1d4ed8;
+    --color-secondary: #9333ea;
+    --color-accent: #f59e0b;
+    --color-neutral: #374151;
+    --color-base-100: #ffffff;
+    --color-info: #3b82f6;
+    --color-success: #10b981;
+    --color-warning: #fbbf24;
+    --color-error: #ef4444;
+}
+
+@layer base {
+  input {
+    outline: none;
+  }
+
+  input:focus {
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+}
