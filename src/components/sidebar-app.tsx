@@ -1,4 +1,5 @@
 import { StoreIcon } from "lucide-react";
+import { Separator } from "./ui/separator";
 
 export const SidebarApp = () => {
   return (
@@ -12,6 +13,13 @@ export const SidebarApp = () => {
           <span className="text-sm font-bold">Nome App</span>
           <span className="text-xs opacity-80">Empresa/Grupo</span>
         </div>
+      </div>
+
+      {/*  */}
+      <Separator />
+
+      <div className="w-full p-2">
+        <ul></ul>
       </div>
     </aside>
   );
