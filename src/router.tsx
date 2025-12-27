@@ -5,7 +5,7 @@ export const router = createRouter({
   routeTree,
   defaultPendingComponent: () => <h1>Aguarde, carregando...</h1>,
   context: {
-    auth: undefined,
+    auth: null,
   },
   defaultPreload: "intent",
   scrollRestoration: true,

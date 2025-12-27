@@ -8,5 +8,11 @@ export const translateMessages: { ptBR: Record<string, string> } = {
     "Invalid email format": "Formato de email inválido",
     "Network error, please try again later":
       "Erro de rede, por favor tente novamente mais tarde",
+    email_not_confirmed:
+      "Email não confirmado. Por favor, verifique sua caixa de entrada.",
+    invalid_credentials:
+      "Credenciais inválidas. Por favor, verifique seu email e senha.",
+    over_email_send_rate_limit:
+      "Limite de envio de email excedido. Por favor, tente novamente mais tarde.",
   },
 };

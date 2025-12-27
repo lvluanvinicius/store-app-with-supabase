@@ -1,7 +1,7 @@
-import path from "path";
 import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 import { defineConfig } from "vite";
 
@@ -19,5 +19,10 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    port: 5177,
+    host: "0.0.0.0",
+    allowedHosts: ["api.chat-app.fb.cednetwork.com.br"],
   },
 });

@@ -6,25 +6,32 @@ import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useState } from "react";
 
-export const FormLogin = () => {
+export const FormRegister = () => {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const { mutate: signIn, isPending } = useMutation({
+  const { mutate: signUp, isPending } = useMutation({
     mutationFn: async () => {
       setErrorMessage(null);
 
-      if (!email || !password) {
+      if (!email || !password || !fullName) {
         setErrorMessage("Por favor, preencha todos os campos.");
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
       });
 
       if (error) {
@@ -32,18 +39,31 @@ export const FormLogin = () => {
         return;
       }
 
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/login" });
     },
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    signIn();
+    signUp();
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <label className="flex flex-col gap-2">
+        <span className="text-sm text-neutral-400">Nome Completo</span>
+        <input
+          type="text"
+          placeholder="Nome completo"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          className={cn(
+            "rounded-md border border-neutral-500/60 bg-neutral-900 px-4 py-2 text-sm placeholder:text-neutral-500/70",
+          )}
+        />
+      </label>
+
       <label className="flex flex-col gap-2">
         <span className="text-sm text-neutral-400">Email</span>
         <input
@@ -92,16 +112,16 @@ export const FormLogin = () => {
           processing={isPending}
           action="POST"
           messages={{
-            create: "Entrar",
+            create: "Criar Conta",
             creating: "Aguarde...",
           }}
         />
       </button>
 
       <div className="flex w-full items-center justify-center text-sm">
-        <Link to="/register">
-          Ainda não tem uma conta?{" "}
-          <span className="text-secondary hover:underline"> Criar conta</span>
+        <Link to="/login">
+          Já tem uma conta?{" "}
+          <span className="text-secondary hover:underline"> Entrar</span>
         </Link>
       </div>
     </form>

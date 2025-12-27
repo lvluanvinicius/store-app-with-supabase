@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as RegisterRouteRouteImport } from './routes/register.route'
 import { Route as LoginRouteRouteImport } from './routes/login.route'
 import { Route as IndexRouteRouteImport } from './routes/index.route'
+import { Route as ActivateConectamaisRouteRouteImport } from './routes/activate/conectamais.route'
 import { Route as AuthenticatedProfileRouteRouteImport } from './routes/_authenticated/profile.route'
 import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authenticated/dashboard.route'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRouteRoute = RegisterRouteRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRouteRoute = LoginRouteRouteImport.update({
@@ -29,6 +36,12 @@ const IndexRouteRoute = IndexRouteRouteImport.update({
   path: '',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivateConectamaisRouteRoute =
+  ActivateConectamaisRouteRouteImport.update({
+    id: '/activate/conectamais',
+    path: '/activate/conectamais',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedProfileRouteRoute =
   AuthenticatedProfileRouteRouteImport.update({
     id: '/profile',
@@ -44,40 +57,60 @@ const AuthenticatedDashboardRouteRoute =
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRouteRoute
+  '/register': typeof RegisterRouteRoute
   '/dashboard': typeof AuthenticatedDashboardRouteRoute
   '/profile': typeof AuthenticatedProfileRouteRoute
+  '/activate/conectamais': typeof ActivateConectamaisRouteRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRouteRoute
+  '/register': typeof RegisterRouteRoute
   '/dashboard': typeof AuthenticatedDashboardRouteRoute
   '/profile': typeof AuthenticatedProfileRouteRoute
+  '/activate/conectamais': typeof ActivateConectamaisRouteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRouteRoute
   '/login': typeof LoginRouteRoute
+  '/register': typeof RegisterRouteRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRouteRoute
+  '/activate/conectamais': typeof ActivateConectamaisRouteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/dashboard' | '/profile'
+  fullPaths:
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/profile'
+    | '/activate/conectamais'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/dashboard' | '/profile'
+  to:
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/profile'
+    | '/activate/conectamais'
   id:
     | '__root__'
     | '/'
     | '/login'
+    | '/register'
     | '/_authenticated'
     | '/_authenticated/dashboard'
     | '/_authenticated/profile'
+    | '/activate/conectamais'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRouteRoute: typeof IndexRouteRoute
   LoginRouteRoute: typeof LoginRouteRoute
+  RegisterRouteRoute: typeof RegisterRouteRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  ActivateConectamaisRouteRoute: typeof ActivateConectamaisRouteRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -87,6 +120,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -101,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof IndexRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activate/conectamais': {
+      id: '/activate/conectamais'
+      path: '/activate/conectamais'
+      fullPath: '/activate/conectamais'
+      preLoaderRoute: typeof ActivateConectamaisRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/profile': {
@@ -137,7 +184,9 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRouteRoute: IndexRouteRoute,
   LoginRouteRoute: LoginRouteRoute,
+  RegisterRouteRoute: RegisterRouteRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  ActivateConectamaisRouteRoute: ActivateConectamaisRouteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
