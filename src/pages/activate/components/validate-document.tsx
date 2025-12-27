@@ -28,10 +28,7 @@ export const ValidateDocument = ({
         "validate-connect-plus",
         {
           body: {
-            name: "Teste",
-          },
-          headers: {
-            Authorization: `Bearer ${session?.session?.access_token}`,
+            name: document,
           },
         },
       );

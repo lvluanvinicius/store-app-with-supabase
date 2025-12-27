@@ -5,11 +5,28 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
+const CONNECT_PLUS_API = Deno.env.get('CONNECT_PLUS_API');
 
 Deno.serve(async (req) => {
   const { document } = await req.json();
 
   // Recuperar dados no conectas-plus com base no documento informado.
+  const response = await fetch(`${CONNECT_PLUS_API}/in/validate-customer-benefits`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({document}),
+  })
+
+ if (response.ok) {
+   const data = await response.json();
+
+  console.log(data);
+ } else  {
+  console.log(response)
+ }
+  
 
   // Com os dados do conecta-plus, validar se o usuário existe no sistema interno.
 

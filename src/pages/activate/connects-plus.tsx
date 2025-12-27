@@ -28,13 +28,6 @@ export const ConnectsPlusPage = () => {
             onFinish={setDocumentValidated}
           />
         </div>
-
-        {documentValidated?.valid && (
-          <div className="mt-6 rounded-lg bg-green-900/20 p-4 text-green-400">
-            Documento validado com sucesso! Você já pode prosseguir com a
-            ativação do seu benefício Connects Plus.
-          </div>
-        )}
       </div>
     </ActivateLayout>
   );
