@@ -15,6 +15,7 @@ CREATE TABLE "profiles" (
   "id" uuid PRIMARY KEY NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   "username" varchar(255) UNIQUE NOT NULL,
   "full_name" varchar(255) NOT NULL,
+  "email" varchar(255) UNIQUE NOT NULL,
   "avatar_url" text,
   
   -- Controle de Assinatura/Plano (Alvo da ativação Sva Standard)
@@ -77,12 +78,13 @@ FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, username, full_name, avatar_url, created_at, updated_at)
+  INSERT INTO public.profiles (id, username, full_name, email, avatar_url, created_at, updated_at)
   VALUES (
     new.id,
     -- Usa parte do email como username provisório
     COALESCE(split_part(new.email, '@', 1), gen_random_uuid()::text),
     COALESCE(split_part(new.email, '@', 1), 'user'),
+    new.email,
     null,
     now(),
     now()

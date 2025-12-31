@@ -4,51 +4,76 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const CONNECT_PLUS_API = Deno.env.get('CONNECT_PLUS_API');
+const CONNECT_PLUS_API = Deno.env.get("CONNECT_PLUS_API");
+
+const supabaseUrl = Deno.env.get("SUPABASE_URL")! as string;
+const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")! as string;
 
 Deno.serve(async (req) => {
-  const { document } = await req.json();
+  try {
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
-  // Recuperar dados no conectas-plus com base no documento informado.
-  const response = await fetch(`${CONNECT_PLUS_API}/in/validate-customer-benefits`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({document}),
-  })
+    const { document } = await req.json();
 
- if (response.ok) {
-   const data = await response.json();
+    // Recupera pelo documento os dados do cliente e o acesso ao sva.
+    const response = await fetch(`${CONNECT_PLUS_API}/in/validate-customer-benefits`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ document }),
+    });
 
-  console.log(data);
- } else  {
-  console.log(response)
- }
-  
+    const data = await response.json();
 
-  // Com os dados do conecta-plus, validar se o usuário existe no sistema interno.
+    if (!response.ok) {
+      return new Response(JSON.stringify({ error: true, data }), {
+        status: response.status,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-  // Se existir, recuperar os dados e retornar um token JWT para o frontend, dando acesso aos seus dados e o plano atual.
+    // Valida se o email foi retornado pelo portal conecta mais.
+    const email = data.data
+      ? data.data.user && data.data.user.email
+        ? data.data.user.email
+        : null
+      : null;
 
-  // Se não existir, retornar o informe ao usuário para que seja criado em outra ação pelo frontend.
- 
+    // Se e-mail não existir, a validação deve ser interrompida.
+    if (!email) {
+      throw new Error("Your email was not found on Connect Plus Portal.", {
+        cause: "error_email_as_not_fount_connect_plus",
+      });
+    }
 
-  return new Response(
-    JSON.stringify({}),
-    { headers: { "Content-Type": "application/json" } },
-  )
-})
+    // TODO:
+    // - Validar se o usuário existe no sistema interno
+    const { data: profileData, error } = await supabaseAdmin
+      .from("profiles")
+      .select("*")
+      .eq("email", email)
+      .limit(1)
+      .maybeSingle();
 
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/validate-connect-plus' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/
+    return new Response(JSON.stringify({ ...data.data, app_profile_exists: !!profileData }), {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    return new Response(
+      JSON.stringify({
+        error: true,
+        connect_plus_access: false,
+        message: err.message,
+        code: err.cause,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+});

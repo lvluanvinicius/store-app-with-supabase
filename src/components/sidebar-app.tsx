@@ -1,7 +1,10 @@
+import { useSession } from "@/hooks/use-session";
 import { StoreIcon } from "lucide-react";
 import { Separator } from "./ui/separator";
 
 export const SidebarApp = () => {
+  const { session } = useSession();
+
   return (
     <aside className="h-full max-w-64 min-w-64 bg-neutral-800 text-white">
       <div className="flex w-full items-center gap-2 p-4">
@@ -21,6 +24,8 @@ export const SidebarApp = () => {
       <div className="w-full p-2">
         <ul></ul>
       </div>
+
+      <div>Seu plano é o {session.profile?.subscription_plan}</div>
     </aside>
   );
 };

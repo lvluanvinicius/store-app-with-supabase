@@ -7,7 +7,6 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useState } from "react";
 
 export const FormRegister = () => {
-  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -18,7 +17,7 @@ export const FormRegister = () => {
     mutationFn: async () => {
       setErrorMessage(null);
 
-      if (!email || !password || !fullName) {
+      if (!email || !password) {
         setErrorMessage("Por favor, preencha todos os campos.");
         return;
       }
@@ -27,9 +26,6 @@ export const FormRegister = () => {
         email,
         password,
         options: {
-          data: {
-            full_name: fullName,
-          },
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
@@ -52,19 +48,6 @@ export const FormRegister = () => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <label className="flex flex-col gap-2">
-        <span className="text-sm text-neutral-400">Nome Completo</span>
-        <input
-          type="text"
-          placeholder="Nome completo"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          className={cn(
-            "rounded-md border border-neutral-500/60 bg-neutral-900 px-4 py-2 text-sm placeholder:text-neutral-500/70",
-          )}
-        />
-      </label>
-
-      <label className="flex flex-col gap-2">
         <span className="text-sm text-neutral-400">Email</span>
         <input
           type="email"
@@ -82,10 +65,6 @@ export const FormRegister = () => {
           <label htmlFor="password" className="text-sm text-neutral-400">
             Senha
           </label>
-
-          <span className="cursor-pointer text-sm opacity-50 hover:underline">
-            Recuperar senha?
-          </span>
         </div>
         <input
           id="password"
@@ -99,9 +78,7 @@ export const FormRegister = () => {
         />
       </div>
 
-      {errorMessage && (
-        <p className="text-center text-xs text-red-500">{errorMessage}</p>
-      )}
+      {errorMessage && <p className="text-center text-xs text-red-500">{errorMessage}</p>}
 
       <button
         type="submit"
@@ -120,8 +97,7 @@ export const FormRegister = () => {
 
       <div className="flex w-full items-center justify-center text-sm">
         <Link to="/login">
-          Já tem uma conta?{" "}
-          <span className="text-secondary hover:underline"> Entrar</span>
+          Já tem uma conta? <span className="text-secondary hover:underline"> Entrar</span>
         </Link>
       </div>
     </form>

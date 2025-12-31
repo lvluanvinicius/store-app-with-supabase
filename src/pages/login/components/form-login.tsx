@@ -79,9 +79,7 @@ export const FormLogin = () => {
         />
       </div>
 
-      {errorMessage && (
-        <p className="text-center text-xs text-red-500">{errorMessage}</p>
-      )}
+      {errorMessage && <p className="text-center text-xs text-red-500">{errorMessage}</p>}
 
       <button
         type="submit"
